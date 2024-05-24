@@ -7,6 +7,11 @@ import java.nio.file.Path;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static org.neo4j.driver.Values.parameters;
 
 
@@ -40,7 +45,6 @@ public class Model {
         try (Session session = driver.session()){
             String query = "MATCH (u:User {username: $username})-[:LIKES]->(g:Game) RETURN g.title AS title";
             Result result = session.run(query, parameters("username", username));
-
             while (result.hasNext()){
                 Record record = result.next();
                 likedGames.add(record.get("title").asString());
@@ -50,6 +54,96 @@ public class Model {
             e.printStackTrace();
         }
         return likedGames;
+    }
+
+    public boolean getRecommendations(String username) {
+        HashMap<String, Double> affinityScoreMap = new HashMap<>();
+        try (Session session = driver.session()) {
+            String tagsQuery = "MATCH (u:User {username: $username})-[r:LIKES_TAG]->(t:Tag) " +
+                    "RETURN t.name AS tag, r.Strength AS strength";
+            Result tagsResult = session.run(tagsQuery, Values.parameters("username", username));
+
+            while (tagsResult.hasNext()) {
+                Record record = tagsResult.next();
+                String tag = record.get("tag").asString();
+                System.out.println(tag);
+                double strength = record.get("strength").asDouble();
+
+                String gamesQuery = "MATCH (g:Game)-[:HAS_TAG]->(t:Tag {name: $tag}) " +
+                        "RETURN g.title AS game";
+                Result gamesResult = session.run(gamesQuery, Values.parameters("tag", tag));
+
+                while (gamesResult.hasNext()) {
+                    Record gameRecord = gamesResult.next();
+                    String gameTitle = gameRecord.get("game").asString();
+
+                    affinityScoreMap.put(gameTitle, affinityScoreMap.getOrDefault(gameTitle, 0.0) + strength);
+                }
+            }
+
+            List<Map.Entry<String, Double>> sortedEntries = affinityScoreMap.entrySet().stream()
+                    .sorted((Map.Entry.<String, Double>comparingByValue().reversed()))
+                    .collect(Collectors.toList());
+
+            System.out.println("Top 5 Recommended Games:");
+            int count = 0;
+            for (Map.Entry<String, Double> entry : sortedEntries) {
+                if (count >= 5) break; // Print only the top 5
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+                count++;
+            }
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error retrieving recommendations for user: " + username + ". " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Este metodo  actualiza la afinidad del usuario hacia ciertos tags
+     * @param username
+     * @return
+     */
+    public boolean setTagAffinity(String username){
+        HashMap<String, Integer> frequencyMap = new HashMap<String, Integer>();
+        HashMap<String, Double> relativeFrequencyMap = new HashMap<String, Double>();
+        ArrayList<String> likedGames = getLikedGames(username);
+        int totalTagCount = 0;
+        try (Session session = driver.session()) {
+            String delPrevQuery = "MATCH (:User {username: $username})-[r:LIKES_TAG]->() DELETE r";
+            session.run(delPrevQuery, Values.parameters("username", username));
+            for (String gameName : likedGames) {
+                String getTagsQuery = "MATCH (g:Game {title: $gameName})-[:HAS_TAG]->(t:Tag) RETURN t.name AS tag";
+                Result result = session.run(getTagsQuery, parameters("gameName", gameName));
+
+                while (result.hasNext()){
+                    Record record = result.next();
+                    String tag = record.get("tag").asString();
+                    frequencyMap.put(tag, frequencyMap.getOrDefault(tag, 0) + 1);
+                    totalTagCount++;
+                }
+            }
+            for (String key : frequencyMap.keySet()){
+                Double relativeFrequency = (double) frequencyMap.get(key) / totalTagCount;
+                relativeFrequencyMap.put(key, relativeFrequency);
+            }
+            for (String tagName : relativeFrequencyMap.keySet()){
+                Double affinity = relativeFrequencyMap.get(tagName);
+                try{
+                    String relQuery = "MATCH (u: User {username: $username}), (t:Tag {name: $tag}) " +
+                            "MERGE (u)-[r:LIKES_TAG]->(t) " +
+                            "SET r.Strength = $affinity";
+                    session.run(relQuery, parameters("username", username, "tag", tagName, "affinity", affinity));
+                } catch (Exception e){
+                    System.err.println("Error creando las asociaciones entre el usuario y los tags");
+                }
+            }
+            return true;
+        } catch (Exception e){
+            System.err.println("Error actualizando la afinidad de los tags");
+            e.printStackTrace();
+            return false;
+        }
     }
     /**
      * Este metodo registra a un nuevo usuario en la base de datos, encripta su contrasena

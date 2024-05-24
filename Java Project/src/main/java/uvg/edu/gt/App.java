@@ -6,11 +6,8 @@ public class App
 {
     public static void main( String[] args )
     {
+        View view = new View();
         Model model = new Model();
-        ArrayList<String> gameList = model.getLikedGames("Prueba1");
-        for (String s : gameList){
-            System.out.println(s);
-        }
-        model.disconnectDB();
+        Controller controller = new Controller(model, view);
     }
 }
