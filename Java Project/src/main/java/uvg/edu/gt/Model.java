@@ -21,6 +21,7 @@ public class Model {
     String uri = "neo4j+s://040a63b9.databases.neo4j.io";
     String user = "neo4j";
     String password = "mwY1aRjtaKL9XzH3Pp6QJIDfGf-VvetrkEzZGCX-5y8";
+    ArrayList<String> gameTitles;
     private Driver driver;
     /**
      * Constructor para la clase Model, inicializa la conexion a la base de datos.
@@ -33,6 +34,19 @@ public class Model {
             System.err.println("Error conectandose a la base de datos");
             e.printStackTrace();
         }
+        gameTitles = updateGameTitles();
+    }
+    public ArrayList<String> updateGameTitles(){
+        ArrayList<String> titles = new ArrayList<String>();
+        try(Session session = driver.session()){
+            String query = "MATCH (g:Game) RETURN g.title AS title";
+            Result result = session.run(query);
+            while (result.hasNext()){
+                Record record = result.next();
+                titles.add(record.get("title").asString());
+            }
+        }
+        return titles;
     }
 
     /**
@@ -56,6 +70,48 @@ public class Model {
         return likedGames;
     }
 
+    /**
+     * Este metodo se utiliza para facilitar la busqueda de juegos por parte del usuario, al contener los nombres
+     * exactos de los juegos puede ser algo complicado  encontrar un juego en especifico.
+     * @param input el nombre (o parcial) del titulo del juego
+     * @return un ArrayList con titulos similares lexicograficamente
+     */
+    public ArrayList<String> gameSearch(String input){
+        ArrayList<String> results = new ArrayList<String>();
+        for (String game : gameTitles){
+            if (game.toLowerCase().contains(input.toLowerCase()) || levenshteinDistance(game.toLowerCase(), input.toLowerCase()) <= 5){
+                if (!results.contains(game)) {
+                    results.add(game);
+                }
+            }
+        }
+        return results;
+    }
+    private int levenshteinDistance(String a, String b){
+        int[][] dp = new int[a.length() + 1][b.length() + 1];
+
+        for (int i = 0; i <= a.length(); i++){
+            for (int j = 0; j <= b.length(); j++){
+                if (i == 0){
+                    dp[i][j] = j;
+                } else if (j == 0){
+                    dp[i][j] = i;
+                } else {
+                    dp[i][j] = Math.min(Math.min(
+                            dp[i - 1][j] + 1,
+                            dp[i][j - 1] + 1),
+                            dp[i - 1][j - 1] + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1));
+                }
+            }
+        }
+        return dp[a.length()][b.length()];
+    }
+
+    /**
+     * Este metodo
+     * @param username
+     * @return
+     */
     public boolean getRecommendations(String username) {
         HashMap<String, Double> affinityScoreMap = new HashMap<>();
         try (Session session = driver.session()) {
@@ -229,6 +285,16 @@ public class Model {
             e.printStackTrace();
             return false;
         }
+    }
+    public boolean removeLikedGame(String username, String gameName){
+        try (Session session = driver.session()){
+            String query = "MATCH (u:User {username: $username})-[r:LIKES]->(g:Game {title: $gameName}) DELETE r";
+            session.run(query, Values.parameters("username", username, "gameName", gameName));
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
     public ArrayList<String> getGamesList(){
         ArrayList<String> gameList = new ArrayList<String>();

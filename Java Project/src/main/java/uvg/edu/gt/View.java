@@ -3,6 +3,8 @@ package uvg.edu.gt;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class View extends JFrame{
     private Color darkBlack;
@@ -22,7 +24,6 @@ public class View extends JFrame{
     private JLabel favoritesLabel;
     private JTextField usernameTextfield;
     private JTextField findGameTextfield;
-    private JTextField favoritesTextfield;
     private JPasswordField passwordTextfield;
     private JButton loginButton;
     private JButton registerButton;
@@ -30,6 +31,7 @@ public class View extends JFrame{
     private JButton favoriteButton;
     private JButton removeButton;
     private JButton recommendButton;
+    private JComboBox<String> favoritesBox;
     private JComboBox<String> gameResultsBox;
 
     public View(){
@@ -55,8 +57,6 @@ public class View extends JFrame{
         //Setup de titlePanel
         titlePanel = new JPanel();
         titlePanel.setBackground(darkBlack);
-        titlePanel.setPreferredSize(new Dimension(760,100));
-        titlePanel.setBounds(0,0,760,540);
         titlePanel.setLayout(new GridBagLayout());
 
         titleLabel = new JLabel();
@@ -147,11 +147,7 @@ public class View extends JFrame{
         findGameTextfield.setBounds(40,80,270,40);
         mainContentPanel.add(findGameTextfield);
 
-        favoritesTextfield = new JTextField();
-        favoritesTextfield.setText("");
-        setFont(favoritesTextfield, 18);
-        favoritesTextfield.setBounds(40, 220, 270, 40);
-        mainContentPanel.add(favoritesTextfield);
+
 
         //Buttons
         findGameButton = new JButton();
@@ -186,6 +182,11 @@ public class View extends JFrame{
         gameResultsBox = new JComboBox<String>();
         gameResultsBox.setBounds(460,80,280,40);
         mainContentPanel.add(gameResultsBox);
+
+        favoritesBox = new JComboBox<String>();
+        favoritesBox.setBounds(40,220,270,40);
+        mainContentPanel.add(favoritesBox);
+
         mainPanel.add(mainContentPanel);
 
         setContentPane(loginPanel);
@@ -208,6 +209,9 @@ public class View extends JFrame{
         loginButton.addActionListener(listener);
         registerButton.addActionListener(listener);
         recommendButton.addActionListener(listener);
+        removeButton.addActionListener(listener);
+        findGameButton.addActionListener(listener);
+        favoriteButton.addActionListener(listener);
     }
     public String getUsernameInput(){
         return usernameTextfield.getText();
@@ -216,6 +220,7 @@ public class View extends JFrame{
         return String.valueOf(passwordTextfield.getPassword());
     }
     public void goToMainPanel(){
+        mainPanel.add(titlePanel);
         setContentPane(mainPanel);
     }
     public JButton getLoginButton(){
@@ -230,17 +235,43 @@ public class View extends JFrame{
     public JButton getFindGameButton(){
         return findGameButton;
     }
+    public String getGameSearch(){
+        return findGameTextfield.getText();
+    }
     public JButton getFavoriteButton(){
         return favoriteButton;
     }
     public JButton getRemoveButton(){
         return removeButton;
     }
-    public void updateSearchOutput(){
-
+    public String getGameSelection(){
+        return (String) gameResultsBox.getSelectedItem();
+    }
+    public void updateSearchOutput(ArrayList<String> inputList){
+        gameResultsBox.removeAllItems();
+        for (String game : inputList){
+            gameResultsBox.addItem(game);
+        }
+    }
+    public String updateFavorites(){
+        favoritesBox.addItem((String) gameResultsBox.getSelectedItem());
+        return (String) gameResultsBox.getSelectedItem();
+    }
+    public void addFavorite(String gameName){
+        favoritesBox.addItem(gameName);
+    }
+    public String getFavoriteSelection(){
+        return (String) favoritesBox.getSelectedItem();
+    }
+    public void removeFromFavorites(){
+        Object selectedItem = favoritesBox.getSelectedItem();
+        favoritesBox.removeItem(selectedItem);
+        favoritesBox.revalidate();
+        favoritesBox.repaint();
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
     }
+
 }
