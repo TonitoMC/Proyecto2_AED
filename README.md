@@ -13,6 +13,7 @@ Los requerimientos recomendados para correr Java son:
 - 128MB de RAM
 - Suficiente almacenamiento para instalar Java y las dependencias (2GB)
 - Procesador Intel Pentium 266MHz en adelante
+
 El programa correrá de manera más fluida en hardware más moderno, al no ser muy pesado se puede correr en virtualmente cualquier máquina de los años recientes conforme cumplan los requerimientos de sistema operativo.
 ## Diseño de la Base de Datos
 El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene como nodos "Game", "User", "Tag" y las relaciones "LIKES" "LIKES_TAG".
