@@ -14,3 +14,13 @@ Los requerimientos recomendados para correr Java son:
 - Suficiente almacenamiento para instalar Java y las dependencias (2GB)
 - Procesador Intel Pentium 266MHz en adelante
 El programa correrá de manera más fluida en hardware más moderno, al no ser muy pesado se puede correr en virtualmente cualquier máquina de los años recientes conforme cumplan los requerimientos de sistema operativo.
+## Diseño de la Base de Datos
+El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene como nodos "Game", "User", "Tag" y las relaciones "LIKES" "LIKES_TAG".
+### Game
+
+### User
+
+### Tag
+
+## Algoritmo de Recomendación
+El algoritmo de recomendación toma en cuenta los juegos que el usuario indica que le gustan, calcula una afinidad hacia ciertos "Tags" basada en su frecuencia relativa y crea una relación ponderada. Para realizar las recomendaciones visita cada uno de los tags a los cuales el usuario es afín, y se le suma la ponderación de la relación al "Puntaje de Recomendación" del juego. Luego de recorrer todos los tags y los juegos correspondientes se le recomiendan los 5 juegos con mayor "Puntaje de Recomendación" al usuario.
