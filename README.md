@@ -23,6 +23,9 @@ El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene co
 
 ### Tag
 
+### Privacidad de los Usuarios
+La información de los usuarios se ve protegida al utilizar variables de entorno para mantener privada la conexión a la base de datos. También se encripta la información sensible (como contraseñas) por medio de BCrypt para que no se almacenen contraseñas en texto en la base de datos. Se almacena la contraseña de manera encriptada en la base de datos y únicamente se realiza una verificación dentro del programa.
+
 ## Algoritmo de Recomendación
 El algoritmo de recomendación toma en cuenta los juegos que el usuario indica que le gustan, calcula una afinidad hacia ciertos "Tags" basada en su frecuencia relativa y crea una relación ponderada. Para realizar las recomendaciones visita cada uno de los tags a los cuales el usuario es afín, y se le suma la ponderación de la relación al "Puntaje de Recomendación" del juego. Luego de recorrer todos los tags y los juegos correspondientes se le recomiendan los 5 juegos con mayor "Puntaje de Recomendación" al usuario
 
