@@ -24,4 +24,10 @@ El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene co
 ### Tag
 
 ## Algoritmo de Recomendación
-El algoritmo de recomendación toma en cuenta los juegos que el usuario indica que le gustan, calcula una afinidad hacia ciertos "Tags" basada en su frecuencia relativa y crea una relación ponderada. Para realizar las recomendaciones visita cada uno de los tags a los cuales el usuario es afín, y se le suma la ponderación de la relación al "Puntaje de Recomendación" del juego. Luego de recorrer todos los tags y los juegos correspondientes se le recomiendan los 5 juegos con mayor "Puntaje de Recomendación" al usuario.
+El algoritmo de recomendación toma en cuenta los juegos que el usuario indica que le gustan, calcula una afinidad hacia ciertos "Tags" basada en su frecuencia relativa y crea una relación ponderada. Para realizar las recomendaciones visita cada uno de los tags a los cuales el usuario es afín, y se le suma la ponderación de la relación al "Puntaje de Recomendación" del juego. Luego de recorrer todos los tags y los juegos correspondientes se le recomiendan los 5 juegos con mayor "Puntaje de Recomendación" al usuario
+
+## Pruebas con Usuarios
+Luego de desarrollar el programa se buscó realizar pruebas con usuarios, pidiéndole a cada uno un puntaje de satisfacción. A continuación se encuentran vínculos a los videos de estas pruebas con usuarios:
+(Usuario 1)[Link]
+(Usuario 2)[Linlk]
+(Usuario 3)[Link]
