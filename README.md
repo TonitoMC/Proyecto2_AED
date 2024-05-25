@@ -6,7 +6,7 @@ Este proyecto utiliza [Maven](https://maven.apache.org/) y fue escrito en [Java]
 ### Utilizar Base de Datos (Privada)
 Al tener el archivo .env con las variables de entorno, simplemente se coloca dentro del directorio del proyecto para que el programa pueda realizar la conexión.
 ### Crear Base de Datos
-En caso de no tener acceso a la base de datos con la información cargada, se sugiere utilizar AuraDB o correr una base de datos local por medio de Neo4j. Para cargar los datos se puede correr el script "QueryExecuter.java" uziliando el archivo "cypher_queries.txt".
+En caso de no tener acceso a la base de datos con la información cargada, se sugiere utilizar AuraDB o correr una base de datos local por medio de Neo4j. Para cargar los datos se puede correr el script "QueryExecuter.java" uziliando el archivo "cypher_queries.txt". Luego se puede crear un archivo .env con los parámetros necesarios para realizar la conexión a la base de datos de Neo4j.
 ### Requerimientos
 Los requerimientos recomendados para correr Java son:
 - Sistema Operativo Linux / MacOS (10.14 en adelante) / Windows (8 en adelante)
