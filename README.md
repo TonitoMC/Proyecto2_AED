@@ -3,11 +3,11 @@
 Este proyecto implementa un sistema de recomendaciones de videojuegos utilizando una base de datos basada en grafos. La base de datos fue creada utilizando el servicio de [AuraDB](https://neo4j.com/cloud/platform/aura-graph-database/) y datos recopilados sobre los juegos de la plataforma [Steam](https://store.steampowered.com/) obtenidos de [Steam Games Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset).
 ## Instalación
 Este proyecto utiliza [Maven](https://maven.apache.org/) y fue escrito en [Java](https://www.java.com/en/), por lo cual es necesario instalar estas dependencias para poder correr el programa. Para proteger los datos de los usuarios y el acceso a la base de datos, la información de conexión se coordina por medio de variables de entorno, por lo cuál es necesario configurarlas para conectarse a la base de datos de AuraDB con los datos cargados.
-# Utilizar Base de Datos (Privada)
+### Utilizar Base de Datos (Privada)
 Al tener el archivo .env con las variables de entorno, simplemente se coloca dentro del directorio del proyecto para que el programa pueda realizar la conexión.
-# Crear Base de Datos
+### Crear Base de Datos
 En caso de no tener acceso a la base de datos con la información cargada, se sugiere utilizar AuraDB o correr una base de datos local por medio de Neo4j. Para cargar los datos se puede correr el script "QueryExecuter.java" uziliando el archivo "cypher_queries.txt".
-# Requerimientos
+### Requerimientos
 Los requerimientos recomendados para correr Java son:
 - Sistema Operativo Linux / MacOS (10.14 en adelante) / Windows (8 en adelante)
 - 128MB de RAM
