@@ -21,7 +21,7 @@ Los requerimientos recomendados para correr Java son:
 
 El programa correrá de manera más fluida en hardware más moderno, al no ser muy pesado se puede correr en virtualmente cualquier máquina de los años recientes conforme cumplan los requerimientos de sistema operativo.
 ### Video Demostrativo
-Instalación FindMyGame
+[Instalación FindMyGame](https://youtu.be/Bh2SjFwDA9w)
 ## Diseño de la Base de Datos
 El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene como nodos "Game", "User", "Tag" y las relaciones "LIKES" "LIKES_TAG".
 ### Game
