@@ -19,6 +19,7 @@ Los requerimientos recomendados para correr Java son:
 - Suficiente almacenamiento para instalar Java y las dependencias (2GB)
 - Procesador Intel Pentium 266MHz en adelante
 - Tener instalado un IDE para modificar variables de entorno / variables en clase Model
+- Una conexión a internet
 
 El programa correrá de manera más fluida en hardware más moderno, al no ser muy pesado se puede correr en virtualmente cualquier máquina de los años recientes conforme cumplan los requerimientos de sistema operativo.
 ### Video Demostrativo
