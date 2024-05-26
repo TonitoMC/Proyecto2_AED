@@ -34,3 +34,8 @@ Luego de desarrollar el programa se buscó realizar pruebas con usuarios, pidié
 - [Jorge](https://youtu.be/LJHlnRyUwt0) - Satisfacción 9/10
 - [Sue]() - Satisfacción 9/10
 - [Yahel]() - Satisfacción 8/10
+
+Llegamos a la conclusión que el sistema puede realizar recomendaciones adecuadas para los usuarios, sin embargo entre las recomendaciones dadas encontramos:
+- Ampliar la base de datos
+- Incluir juegos fuera de Steam
+- Mejorar la interfaz gráfica
