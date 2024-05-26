@@ -25,11 +25,19 @@ Instalación FindMyGame
 ## Diseño de la Base de Datos
 El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene como nodos "Game", "User", "Tag" y las relaciones "LIKES" "LIKES_TAG".
 ### Game
-
+Los juegos se relacionan por medio de "HAS_TAG" hacia los diferentes Tags
+![image](https://github.com/TonitoMC/Proyecto2_AED/assets/138615863/f98f96b7-9370-4287-a0c5-a31c38f80386)
+Y por medio de "HAS_PRICE" hacia el nodo "Free"
+![image](https://github.com/TonitoMC/Proyecto2_AED/assets/138615863/60a3820d-a999-4889-9a4b-f102a51ae2ee)
 ### User
-
+Las contraseñas de los usuarios se encuentran encriptadas, únicamente realizando una verificación por medio de BCrypt
+![image](https://github.com/TonitoMC/Proyecto2_AED/assets/138615863/3ca2eef4-95b4-4da4-9f38-21872a2dbc43)
+Se relaciona con los juegos por medio de la relación "LIKES"
+![image](https://github.com/TonitoMC/Proyecto2_AED/assets/138615863/92e29987-0f12-47ec-8be6-fbb86659191b)
+Y se relaciona con los Tags por medio de "LIKES_TAG", una relación ponderada
+![image](https://github.com/TonitoMC/Proyecto2_AED/assets/138615863/9cb6341f-3738-4eee-8c2f-49099dd5b911)
 ### Tag
-
+Los tags únicamente tienen relaciones dirigidos hacia ellos.
 ### Privacidad de los Usuarios
 La información de los usuarios se ve protegida al utilizar una base de datos privada, en este caso para la calificación del proyecto se proveerá al profesor y los auxiliares con las credenciales para acceder a la base de datos. Estas credenciales pueden almacenarse utilizando variables de entornoe para evitar que cualquier persona tenga acceso a la base de datos. También se encripta la información sensible (como contraseñas) por medio de BCrypt para que no se almacenen contraseñas en texto en la base de datos. Se almacena la contraseña de manera encriptada en la base de datos y únicamente se realiza una verificación dentro del programa.
 
