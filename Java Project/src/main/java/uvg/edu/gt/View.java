@@ -19,6 +19,8 @@ public class View extends JFrame{
     private JLabel titleLabel;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
+    private JLabel recommendationsLabel;
+    private JLabel resultsLabel;
     private JLabel userWelcomeLabel;
     private JLabel findGameLabel;
     private JLabel favoritesLabel;
@@ -33,6 +35,8 @@ public class View extends JFrame{
     private JButton recommendButton;
     private JComboBox<String> favoritesBox;
     private JComboBox<String> gameResultsBox;
+    private JComboBox<String> recommendationResultsBox;
+    private JToggleButton freeButton;
 
     public View(){
         initComponents();
@@ -127,6 +131,14 @@ public class View extends JFrame{
         mainContentPanel.setBackground(lightBlack);
         mainContentPanel.setLayout(null);
 
+        //ToggleButton
+        freeButton = new JToggleButton();
+        freeButton.setText("Unicamente Gratis");
+        freeButton.setBounds(330,320, 270, 40);
+        freeButton.setBackground(white);
+        freeButton.setForeground(darkBlack);
+        mainContentPanel.add(freeButton);
+
         //Labels
         findGameLabel = new JLabel();
         findGameLabel.setText("Busca un Juego:");
@@ -134,11 +146,23 @@ public class View extends JFrame{
         findGameLabel.setBounds(40,40,200,30);
         mainContentPanel.add(findGameLabel);
 
+        resultsLabel = new JLabel();
+        resultsLabel.setText("Resultados:");
+        setFont(resultsLabel, 18);
+        resultsLabel.setBounds(460,40,200,30);
+        mainContentPanel.add(resultsLabel);
+
         favoritesLabel = new JLabel();
         favoritesLabel.setText("Tus Favoritos:");
         setFont(favoritesLabel, 18);
-        favoritesLabel.setBounds(40, 180, 200, 30);
+        favoritesLabel.setBounds(40, 190, 200, 30);
         mainContentPanel.add(favoritesLabel);
+
+        recommendationsLabel = new JLabel();
+        recommendationsLabel.setText("Recomendaciones:");
+        setFont(recommendationsLabel, 18);
+        recommendationsLabel.setBounds(460,190,200,30);
+        mainContentPanel.add(recommendationsLabel);
 
         //Text fields
         findGameTextfield = new JTextField();
@@ -168,14 +192,14 @@ public class View extends JFrame{
         removeButton.setBackground(white);
         removeButton.setText("Eliminar");
         removeButton.setForeground(darkBlack);
-        removeButton.setBounds(330,220,100,40);
+        removeButton.setBounds(330,230,100,40);
         mainContentPanel.add(removeButton);
 
         recommendButton = new JButton();
         recommendButton.setBackground(white);
         recommendButton.setText("Generar Recomendaciones");
         recommendButton.setForeground(darkBlack);
-        recommendButton.setBounds(130,320,260,40);
+        recommendButton.setBounds(40,320,270,40);
         mainContentPanel.add(recommendButton);
 
         //JComboBox
@@ -183,8 +207,12 @@ public class View extends JFrame{
         gameResultsBox.setBounds(460,80,280,40);
         mainContentPanel.add(gameResultsBox);
 
+        recommendationResultsBox = new JComboBox<String>();
+        recommendationResultsBox.setBounds(460, 230, 280, 40);
+        mainContentPanel.add(recommendationResultsBox);
+
         favoritesBox = new JComboBox<String>();
-        favoritesBox.setBounds(40,220,270,40);
+        favoritesBox.setBounds(40,230,270,40);
         mainContentPanel.add(favoritesBox);
 
         mainPanel.add(mainContentPanel);
@@ -260,6 +288,12 @@ public class View extends JFrame{
     public void addFavorite(String gameName){
         favoritesBox.addItem(gameName);
     }
+    public void addRecommendation(String gameName){
+        recommendationResultsBox.addItem(gameName);
+    }
+    public void clearRecommendations(){
+        recommendationResultsBox.removeAllItems();
+    }
     public String getFavoriteSelection(){
         return (String) favoritesBox.getSelectedItem();
     }
@@ -268,6 +302,9 @@ public class View extends JFrame{
         favoritesBox.removeItem(selectedItem);
         favoritesBox.revalidate();
         favoritesBox.repaint();
+    }
+    public boolean getFreeButton(){
+        return freeButton.isSelected();
     }
 
     private void createUIComponents() {
