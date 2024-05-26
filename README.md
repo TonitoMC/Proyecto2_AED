@@ -31,6 +31,6 @@ El algoritmo de recomendación toma en cuenta los juegos que el usuario indica q
 
 ## Pruebas con Usuarios
 Luego de desarrollar el programa se buscó realizar pruebas con usuarios, pidiéndole a cada uno un puntaje de satisfacción. A continuación se encuentran vínculos a los videos de estas pruebas con usuarios:
-(Usuario 1)[Link]
-(Usuario 2)[Linlk]
-(Usuario 3)[Link]
+[Jorge](https://youtu.be/LJHlnRyUwt0)
+[Sue]()
+[Yahel]()
