@@ -13,7 +13,6 @@ public class Controller implements ActionListener{
         this.model = model;
         this.view = view;
         view.addActionListener(this);
-        System.out.println(model.getLikedGames("Prueba1"));
     }
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == view.getLoginButton()){
@@ -37,7 +36,14 @@ public class Controller implements ActionListener{
             }
         }
         if (e.getSource() == view.getRecommendButton()){
-            model.disconnectDB();
+            model.setTagAffinity(currentUser);
+            view.clearRecommendations();
+            ArrayList<String> recommendations = model.getRecommendations(currentUser, view.getFreeButton());
+            for (String gameName : recommendations){
+                if (!gameName.isEmpty()) {
+                    view.addRecommendation(gameName);
+                }
+            }
         }
         if (e.getSource() == view.getFindGameButton()){
             System.out.println(view.getGameSelection());
@@ -51,11 +57,6 @@ public class Controller implements ActionListener{
             model.removeLikedGame(currentUser, view.getFavoriteSelection());
             view.removeFromFavorites();
         }
-    }
-    public void test(){
-        model.setTagAffinity("Prueba1");
-        model.getRecommendations("Prueba1");
-        model.disconnectDB();
     }
 
 
