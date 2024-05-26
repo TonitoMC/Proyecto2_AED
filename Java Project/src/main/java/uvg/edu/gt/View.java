@@ -6,6 +6,13 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Esta clase se encarga de la interaccion con el usuario, provee una interfaz grafica con la cual interactuar
+ * @author Jose Merida
+ * @author Adrian Lopez
+ * @since 25-05-2024
+ * @version 1.0
+ */
 public class View extends JFrame{
     private Color darkBlack;
     private Color lightBlack;
@@ -21,7 +28,6 @@ public class View extends JFrame{
     private JLabel passwordLabel;
     private JLabel recommendationsLabel;
     private JLabel resultsLabel;
-    private JLabel userWelcomeLabel;
     private JLabel findGameLabel;
     private JLabel favoritesLabel;
     private JTextField usernameTextfield;
@@ -38,11 +44,18 @@ public class View extends JFrame{
     private JComboBox<String> recommendationResultsBox;
     private JToggleButton freeButton;
 
+    /**
+     * Constructor para la clase View, crea los componentes
+     */
     public View(){
         initComponents();
     }
-    private void initComponents(){
 
+    /**
+     * Este metodo se encarga de crear los componentes de la interfaz con los que interactua el usuario
+     */
+    private void initComponents(){
+        //Variables de colores utilizados en la interfaz
         darkBlack = new Color(34,40,49);
         white = new Color(238, 238, 238);
         lightBlack = new Color(49, 54, 63);
@@ -223,16 +236,39 @@ public class View extends JFrame{
         setVisible(true);
 
     }
+
+    /**
+     * Este metodo se utiliza para cambiar el estilo de los labels
+     * @param label el label a modificar
+     * @param size tamano de la fuente
+     */
     public void setFont(JLabel label, int size){
         label.setFont(new Font("JetBrains Mono SemiBold", 0, size));
         label.setForeground(white);
     }
+
+    /**
+     * Este metodo se utiliza para cambiar el estilo de los campos de texto
+     * @param textField el textField a modificar
+     * @param size el tamano de la fuente
+     */
     public void setFont(JTextField textField, int size){
         textField.setFont(new Font("JetBrains Mono SemiBold", 0, size));
     }
+
+    /**
+     * Este metodo se utiliza para modificar el estilo de los botones
+     * @param button el boton a modificar
+     * @param size el tamano de la fuente
+     */
     public void setFont(JButton button, int size){
         button.setFont(new Font("JetBrains Mono SemiBold", 0, size));
     }
+
+    /**
+     * Este metodo se utiliza para poder interpretar las interacciones del usuario con la itnerfaz
+     * @param listener el listener
+     */
     public void addActionListener(ActionListener listener){
         loginButton.addActionListener(listener);
         registerButton.addActionListener(listener);
@@ -241,74 +277,163 @@ public class View extends JFrame{
         findGameButton.addActionListener(listener);
         favoriteButton.addActionListener(listener);
     }
+
+    /**
+     * Este metodo se utiliza para obtener el texto dentro del campo de texto de usuario
+     * @return String input del usuario
+     */
     public String getUsernameInput(){
         return usernameTextfield.getText();
     }
+
+    /**
+     * Este metodo se utiliza para obtener el texto dentro del campo de password
+     * @return String input del usuario
+     */
     public String getPasswordInput() {
         return String.valueOf(passwordTextfield.getPassword());
     }
+
+    /**
+     * Este metodo se utiliza para regresar al panel principal
+     */
     public void goToMainPanel(){
         mainPanel.add(titlePanel);
         setContentPane(mainPanel);
     }
+
+    /**
+     * Getter para loginButton
+     * @return loginButton
+     */
     public JButton getLoginButton(){
         return loginButton;
     }
+
+    /**
+     * Getter para registerbutton
+     * @return registerButton
+     */
     public JButton getRegisterButton(){
         return registerButton;
     }
+
+    /**
+     * Getter para recommendButton
+     * @return recommendButton
+     */
     public JButton getRecommendButton(){
         return recommendButton;
     }
+
+    /**
+     * Getter para findGameButton
+     * @return findGameButton
+     */
     public JButton getFindGameButton(){
         return findGameButton;
     }
+
+    /**
+     * Getter para el campo de busqueda de juegos
+     * @return
+     */
     public String getGameSearch(){
         return findGameTextfield.getText();
     }
+
+    /**
+     * Getter para favoriteButton
+     * @return favoriteButton
+     */
     public JButton getFavoriteButton(){
         return favoriteButton;
     }
+
+    /**
+     * Getter para removeButton
+     * @return removeButton
+     */
     public JButton getRemoveButton(){
         return removeButton;
     }
+
+    /**
+     * Metodo para obtener la seleccion de los resultados de busqueda de juegos
+     * @return String, nombre del juego seleccionado
+     */
     public String getGameSelection(){
         return (String) gameResultsBox.getSelectedItem();
     }
+
+    /**
+     * Este metodo actualiza el output de la lista de resultados de busqueda
+     * @param inputList los resultados de la busqueda para ingresar
+     */
     public void updateSearchOutput(ArrayList<String> inputList){
         gameResultsBox.removeAllItems();
         for (String game : inputList){
             gameResultsBox.addItem(game);
         }
     }
+
+    /**
+     * Este metodo actualiza los favoritos
+     * @return el item seleccionado de gamesResultBox
+     */
     public String updateFavorites(){
         favoritesBox.addItem((String) gameResultsBox.getSelectedItem());
         return (String) gameResultsBox.getSelectedItem();
     }
+
+    /**
+     * Este metodo agrega un juego nuevo a los favoritos
+     * @param gameName el  nombre del juego
+     */
     public void addFavorite(String gameName){
         favoritesBox.addItem(gameName);
     }
+
+    /**
+     * Este metodo agrega un elemento a la caja de recomendaciones
+     * @param gameName el nombre del juego por agregar
+     */
     public void addRecommendation(String gameName){
         recommendationResultsBox.addItem(gameName);
     }
+
+    /**
+     * Limpia la caja de recomendaciones
+     */
     public void clearRecommendations(){
         recommendationResultsBox.removeAllItems();
     }
+
+    /**
+     * Getter para la seleccion de favoritos
+     * @return String, el nombre del juego seleccionado
+     */
     public String getFavoriteSelection(){
         return (String) favoritesBox.getSelectedItem();
     }
+
+    /**
+     * Remueve el juego seleccionado de los favoritos
+     */
     public void removeFromFavorites(){
         Object selectedItem = favoritesBox.getSelectedItem();
         favoritesBox.removeItem(selectedItem);
         favoritesBox.revalidate();
         favoritesBox.repaint();
     }
+
+    /**
+     * Obtiene el valor de FreeButton (si esta presionado o no)
+     * @return True si esta presionado, False de lo contrario
+     */
     public boolean getFreeButton(){
         return freeButton.isSelected();
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 
 }

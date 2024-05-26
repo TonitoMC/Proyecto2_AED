@@ -16,22 +16,28 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class Model {
     String uri = NEO4J_URI;
-    String user = NRO4J_USER;
+    String user = NEO4J_USER;
     String password = NEO4J_PASSWORD;
     ArrayList<String> gameTitles;
     private Driver driver;
     /**
-     * Constructor para la clase Model, inicializa la conexion a la base de datos.
+     * Constructor para la clase Model, inicializa la conexion a la base de datos y se encarga del funcinoamiento
+     * interno del programa
+     * @author Jose Merida
+     * @author Adrian Lopez
+     * @since 25-05-2024
+     * @version 1.0
      */
     public Model(){
         try {
+            //Crea la conexion a la base de datos y agrega un shutdownhook para cerrarla cuando cierra el programa
             driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
             System.out.println("Conexion a la base de datos exitosa");
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("Shutdown hook triggered. Closing Neo4j driver...");
+                System.out.println("Cerrando conexion a la base de datos");
                 if (driver != null) {
                     driver.close();
-                    System.out.println("Neo4j driver closed.");
+                    System.out.println("Cerrada conexion a la base de datos");
                 }
             }));
         } catch (Exception e) {
@@ -41,6 +47,12 @@ public class Model {
 
         gameTitles = updateGameTitles();
     }
+
+    /**
+     * Este metodo se utiliza para tener un almacenamiento local de todos los titulos presentes, util para las
+     * funciones de busqueda de titulos para el input del usuario
+     * @return un ArrayList que contiene todos los juegos de la base de datos
+     */
     public ArrayList<String> updateGameTitles(){
         ArrayList<String> titles = new ArrayList<String>();
         try(Session session = driver.session()){
@@ -92,6 +104,15 @@ public class Model {
         }
         return results;
     }
+
+    /**
+     * Este metodo es un metodo popular para comparar la similitud entre dos strings, retorna un entero que indica
+     * la cantidad de modificaciones que se necesitan para llegar de un string "a" a un string "b". Este retorno se
+     * compara y permite a los usuarios ingresar nombres similares y encontrar el juego que desean
+     * @param a el primer string
+     * @param b el segundo string
+     * @return la cantidad de modificaciones necesarias para convertir el string a dentro del string b
+     */
     private int levenshteinDistance(String a, String b){
         int[][] dp = new int[a.length() + 1][b.length() + 1];
 
@@ -111,22 +132,23 @@ public class Model {
         }
         return dp[a.length()][b.length()];
     }
-
     /**
-     * Este metodo
+     * Este metodo se utiliza para obtener las recomendaciones, basado en los tags les genera un puntaje de
+     * recomendacion a cada uno de los juegos
      * @param username
-     * @return
+     * @return un ArrayList con los 10 juegos con mejor puntaje
      */
     public ArrayList<String> getRecommendations(String username, boolean free) {
         ArrayList<String> likedGameList = getLikedGames(username);
         ArrayList<String> recommendedGameList = new ArrayList<String>();
         HashMap<String, Double> affinityScoreMap = new HashMap<>();
+        //Esta parte realiza los calculos sin importar el precio de los juegos (gratis o no)
         if (!free) {
             try (Session session = driver.session()) {
                 String tagsQuery = "MATCH (u:User {username: $username})-[r:LIKES_TAG]->(t:Tag) " +
                         "RETURN t.name AS tag, r.Strength AS strength";
                 Result tagsResult = session.run(tagsQuery, Values.parameters("username", username));
-
+                //Recorre los tags y obtiene la afinidad de los usuarios a cada uno
                 while (tagsResult.hasNext()) {
                     Record record = tagsResult.next();
                     String tag = record.get("tag").asString();
@@ -136,15 +158,16 @@ public class Model {
                             "RETURN g.title AS game";
                     Result gamesResult = session.run(gamesQuery, Values.parameters("tag", tag));
 
+                    //Recorre los juegos que estan asociados con cada tag y les suma el valor de afinidad a cada uno
                     while (gamesResult.hasNext()) {
                         Record gameRecord = gamesResult.next();
                         String gameTitle = gameRecord.get("game").asString();
-
                         affinityScoreMap.put(gameTitle, affinityScoreMap.getOrDefault(gameTitle, 0.0) + strength);
                     }
                 }
             }
         }
+        //Este bloque de codigo ejecuta los mismos pasos, unicamente que para juegos gratis
          else {
                 try (Session session = driver.session()) {
                     String tagsQuery = "MATCH (u:User {username: $username})-[r:LIKES_TAG]->(t:Tag) " +
@@ -170,16 +193,19 @@ public class Model {
                     }
                 }
             }
+         //Remueve los juegos que ya le gustan al usuario de las recomendaciones
             for (String likedGame : likedGameList){
                 Set<String> keySet = affinityScoreMap.keySet();
                 if (keySet.contains(likedGame)){
                     affinityScoreMap.remove(likedGame);
                 }
             }
+            //Sortea el mapa para tener las entradas mas altas de primero
             List<Map.Entry<String, Double>> sortedEntries = affinityScoreMap.entrySet().stream()
                     .sorted((Map.Entry.<String, Double>comparingByValue().reversed()))
                     .collect(Collectors.toList());
             int count = 0;
+            //Agrega las primeras 10 a un ArrayList
             for (Map.Entry<String, Double> entry : sortedEntries) {
                 if (count >= 10) break;
                 recommendedGameList.add(entry.getKey());
@@ -190,8 +216,8 @@ public class Model {
 
     /**
      * Este metodo  actualiza la afinidad del usuario hacia ciertos tags
-     * @param username
-     * @return
+     * @param username el nombre del usuario
+     * @return true si la operacion fue exitosa, false de lo contrario
      */
     public boolean setTagAffinity(String username){
         HashMap<String, Integer> frequencyMap = new HashMap<String, Integer>();
@@ -201,10 +227,11 @@ public class Model {
         try (Session session = driver.session()) {
             String delPrevQuery = "MATCH (:User {username: $username})-[r:LIKES_TAG]->() DELETE r";
             session.run(delPrevQuery, Values.parameters("username", username));
+            //Recorre los juegos que le gustan al usuario y busca los tags con los que estan asociados cada uno
             for (String gameName : likedGames) {
                 String getTagsQuery = "MATCH (g:Game {title: $gameName})-[:HAS_TAG]->(t:Tag) RETURN t.name AS tag";
                 Result result = session.run(getTagsQuery, parameters("gameName", gameName));
-
+                //Agrega los juegos a un diccionario o les suma 1 a su frecuencia (el valor del diccionario)
                 while (result.hasNext()){
                     Record record = result.next();
                     String tag = record.get("tag").asString();
@@ -212,10 +239,12 @@ public class Model {
                     totalTagCount++;
                 }
             }
+            //Cambia la frecuencia por frecuencia relativa
             for (String key : frequencyMap.keySet()){
                 Double relativeFrequency = (double) frequencyMap.get(key) / totalTagCount;
                 relativeFrequencyMap.put(key, relativeFrequency);
             }
+            //Crea las relaciones en la base de datos
             for (String tagName : relativeFrequencyMap.keySet()){
                 Double affinity = relativeFrequencyMap.get(tagName);
                 try{
@@ -294,12 +323,6 @@ public class Model {
      * @return true si la operacion fue exitosa, false de lo contrario
      */
     public boolean addLikedGame(String username, String gameName){
-        ArrayList<String> gamesList = getGamesList();
-        for (int i = 0; i < gamesList.size(); i++){
-            if (gamesList.get(i).equalsIgnoreCase(gameName)){
-                return false;
-            }
-        }
         //Se puede verificar si al usuario ya le gusta el juego
         try (Session session = driver.session()){
             String checkQuery = "MATCH (u:User {username: $username})-[:LIKES]->(g:Game {title: $gameName}) RETURN g";
@@ -319,6 +342,13 @@ public class Model {
             return false;
         }
     }
+
+    /**
+     * Este metodo se utiliza para remover un juego que previamente le gustaba al usuario
+     * @param username el nombre del usuario
+     * @param gameName el nombre del juego
+     * @return true si la operacion fue exitosa, false de lo contrario
+     */
     public boolean removeLikedGame(String username, String gameName){
         try (Session session = driver.session()){
             String query = "MATCH (u:User {username: $username})-[r:LIKES]->(g:Game {title: $gameName}) DELETE r";
@@ -329,10 +359,7 @@ public class Model {
         }
         return true;
     }
-    public ArrayList<String> getGamesList(){
-        ArrayList<String> gameList = new ArrayList<String>();
-        return gameList;
-    }
+
     /**
      * Este metodo se utiliza para obtener todos los nombres de usuario de las personas registradas
      * @return ArrayList con los nombres de usuario
@@ -353,12 +380,6 @@ public class Model {
             e.printStackTrace();
         }
         return usernameList;
-    }
-    public void disconnectDB(){
-        if (driver != null){
-            driver.close();
-            System.out.println("Desconectado de la base de datos");
-        }
     }
 }
 
