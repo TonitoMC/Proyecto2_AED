@@ -40,7 +40,13 @@ Pasos a seguir:
 - Copiar repositorio de Github a un proyecto local utilizando un IDE o descargando el proyecto
 - Modificar variables dentro de Model conteniendo las credenciales de la base de datos
 - Correr script de Maven
-  
+
+Al tener instalado el sistema, el usuario debe hacer lo siguiente:
+
+- Ingresar credenciales válidas para la base de datos
+- Agregar juegos a sus favoritos
+- Generar recomendaciones
+
 ## Diseño de la Base de Datos
 El programa utiliza una base de datos basada en grafos empleando Neo4j. Tiene como nodos "Game", "User", "Tag" y las relaciones "LIKES" "LIKES_TAG".
 ### Game
@@ -73,7 +79,7 @@ El algoritmo de recomendación toma en cuenta los juegos que el usuario indica q
 
 ## Pruebas con Usuarios
 Luego de desarrollar el programa se buscó realizar pruebas con usuarios por medio de una conexión de TeamViewer, pidiéndole a cada uno un puntaje de satisfacción y recomendaciones. A continuación se encuentran vínculos a los videos de estas pruebas con usuarios:
-- [Jorge](https://youtu.be/LJHlnRyUwt0) - Satisfacción 9/10
+- [Jorge](https://youtu.be/LJHlnRyUwt0) - Satisfacción 9/10. Durante esta interacción hubo una breve interrupción, luego se pudo resumir fácilmente al ingresar por medio del mismo usuario nuevamente
 - [Sue](https://youtu.be/vTTxLcTmW_Y) - Satisfacción 9/10
 - [Yahel](https://youtu.be/nsHdOJpDXdA) - Satisfacción 8/10
 
