@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.neo4j.driver.Values.parameters;
@@ -27,18 +30,10 @@ public class Model {
         try {
             driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
             System.out.println("Conexion a la base de datos exitosa");
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("Shutdown hook triggered. Closing Neo4j driver...");
-                if (driver != null) {
-                    driver.close();
-                    System.out.println("Neo4j driver closed.");
-                }
-            }));
         } catch (Exception e) {
             System.err.println("Error conectandose a la base de datos");
             e.printStackTrace();
         }
-
         gameTitles = updateGameTitles();
     }
     public ArrayList<String> updateGameTitles(){
@@ -74,7 +69,6 @@ public class Model {
         }
         return likedGames;
     }
-
     /**
      * Este metodo se utiliza para facilitar la busqueda de juegos por parte del usuario, al contener los nombres
      * exactos de los juegos puede ser algo complicado  encontrar un juego en especifico.
@@ -84,7 +78,7 @@ public class Model {
     public ArrayList<String> gameSearch(String input){
         ArrayList<String> results = new ArrayList<String>();
         for (String game : gameTitles){
-            if (game.toLowerCase().contains(input.toLowerCase()) || levenshteinDistance(game.toLowerCase(), input.toLowerCase()) <= 3){
+            if (game.toLowerCase().contains(input.toLowerCase()) || levenshteinDistance(game.toLowerCase(), input.toLowerCase()) <= 5){
                 if (!results.contains(game)) {
                     results.add(game);
                 }
@@ -117,9 +111,7 @@ public class Model {
      * @param username
      * @return
      */
-    public ArrayList<String> getRecommendations(String username) {
-        ArrayList<String> likedGameList = getLikedGames(username);
-        ArrayList<String> recommendedGameList = new ArrayList<String>();
+    public boolean getRecommendations(String username) {
         HashMap<String, Double> affinityScoreMap = new HashMap<>();
         try (Session session = driver.session()) {
             String tagsQuery = "MATCH (u:User {username: $username})-[r:LIKES_TAG]->(t:Tag) " +
@@ -129,6 +121,7 @@ public class Model {
             while (tagsResult.hasNext()) {
                 Record record = tagsResult.next();
                 String tag = record.get("tag").asString();
+                System.out.println(tag);
                 double strength = record.get("strength").asDouble();
 
                 String gamesQuery = "MATCH (g:Game)-[:HAS_TAG]->(t:Tag {name: $tag}) " +
@@ -142,28 +135,23 @@ public class Model {
                     affinityScoreMap.put(gameTitle, affinityScoreMap.getOrDefault(gameTitle, 0.0) + strength);
                 }
             }
-            for (String likedGame : likedGameList){
-                Set<String> keySet = affinityScoreMap.keySet();
-                if (keySet.contains(likedGame)){
-                    affinityScoreMap.remove(likedGame);
-                }
-            }
+
             List<Map.Entry<String, Double>> sortedEntries = affinityScoreMap.entrySet().stream()
                     .sorted((Map.Entry.<String, Double>comparingByValue().reversed()))
                     .collect(Collectors.toList());
 
-
+            System.out.println("Top 5 Recommended Games:");
             int count = 0;
             for (Map.Entry<String, Double> entry : sortedEntries) {
-                if (count >= 10) break;
-                recommendedGameList.add(entry.getKey());
+                if (count >= 5) break; // Print only the top 5
+                System.out.println(entry.getKey() + ": " + entry.getValue());
                 count++;
             }
-            return recommendedGameList;
+            return true;
         } catch (Exception e) {
             System.err.println("Error retrieving recommendations for user: " + username + ". " + e.getMessage());
+            return false;
         }
-        return recommendedGameList;
     }
 
     /**
