@@ -30,10 +30,10 @@ La información de los usuarios se ve protegida al utilizar variables de entorno
 El algoritmo de recomendación toma en cuenta los juegos que el usuario indica que le gustan, calcula una afinidad hacia ciertos "Tags" basada en su frecuencia relativa y crea una relación ponderada. Para realizar las recomendaciones visita cada uno de los tags a los cuales el usuario es afín, y se le suma la ponderación de la relación al "Puntaje de Recomendación" del juego. Luego de recorrer todos los tags y los juegos correspondientes se le recomiendan los 5 juegos con mayor "Puntaje de Recomendación" al usuario
 
 ## Pruebas con Usuarios
-Luego de desarrollar el programa se buscó realizar pruebas con usuarios, pidiéndole a cada uno un puntaje de satisfacción. A continuación se encuentran vínculos a los videos de estas pruebas con usuarios:
+Luego de desarrollar el programa se buscó realizar pruebas con usuarios por medio de una conexión de TeamViewer, pidiéndole a cada uno un puntaje de satisfacción y recomendaciones. A continuación se encuentran vínculos a los videos de estas pruebas con usuarios:
 - [Jorge](https://youtu.be/LJHlnRyUwt0) - Satisfacción 9/10
-- [Sue]() - Satisfacción 9/10
-- [Yahel]() - Satisfacción 8/10
+- [Sue](https://youtu.be/vTTxLcTmW_Y) - Satisfacción 9/10
+- [Yahel](https://youtu.be/nsHdOJpDXdA) - Satisfacción 8/10
 
 Llegamos a la conclusión que el sistema puede realizar recomendaciones adecuadas para los usuarios, sin embargo entre las recomendaciones dadas encontramos:
 - Ampliar la base de datos
