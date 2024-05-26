@@ -15,9 +15,9 @@ import static org.neo4j.driver.Values.parameters;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Model {
-    String uri = "neo4j+s://040a63b9.databases.neo4j.io";
-    String user = "neo4j";
-    String password = "mwY1aRjtaKL9XzH3Pp6QJIDfGf-VvetrkEzZGCX-5y8";
+    String uri = NEO4J_URI;
+    String user = NRO4J_USER;
+    String password = NEO4J_PASSWORD;
     ArrayList<String> gameTitles;
     private Driver driver;
     /**
