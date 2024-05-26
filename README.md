@@ -13,13 +13,23 @@ Al reemplazar estas variables se logra conectar exitosamente a la base de datos.
 ### Crear Base de Datos
 En caso de no tener acceso a la base de datos con la información cargada, se sugiere utilizar AuraDB o correr una base de datos local por medio de Neo4j. Para cargar los datos se puede correr el script "QueryExecuter.java" uziliando el archivo "cypher_queries.txt". Luego se puede crear un archivo .env con los parámetros necesarios para realizar la conexión a la base de datos de Neo4j.
 ### Requerimientos
-Los requerimientos recomendados para correr Java son:
+Los requerimientos mínimos para correr el programa son:
 - Sistema Operativo Linux / MacOS (10.14 en adelante) / Windows (8 en adelante)
 - 128MB de RAM
 - Suficiente almacenamiento para instalar Java y las dependencias (2GB)
 - Procesador Intel Pentium 266MHz en adelante
 - Tener instalado un IDE para modificar variables de entorno / variables en clase Model
 - Una conexión a internet
+
+Estos requerimientos fueron obtenidos por parte de Java, aseguran que el programa pueda correr (soportado por el hardware) pero pueden correr de manera lenta.
+
+Para un funcionamiento rápido y adecuado recomendamos:
+- Sistema Operativo Windows 11
+- 8GB de RAM
+- 16GB de almacenamiento
+- Procesador Intel Core i3+ de 9na generación en adelante
+- IntelliJ IDEA como IDE
+- Una conexión a internet de más de 5Mbps
 
 El programa correrá de manera más fluida en hardware más moderno, al no ser muy pesado se puede correr en virtualmente cualquier máquina de los años recientes conforme cumplan los requerimientos de sistema operativo.
 ### Video Demostrativo
